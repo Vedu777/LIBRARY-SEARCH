@@ -469,6 +469,7 @@ body {
     position: relative;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 100px 32px;
@@ -534,16 +535,17 @@ body {
 }
 
 .hero-stats {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    margin-top: 48px;
+    bottom: auto;
+    left: auto;
+    transform: none;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     width: 100%;
-    max-width: 600px;
-    z-index: 1;
+    max-width: 800px;
+    z-index: 10;
 }
 
 .stat-card {
@@ -1479,6 +1481,22 @@ body {
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-left {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .profile-card {
+        width: 100%;
+    }
 }
 
 .profile-left {
@@ -1581,7 +1599,7 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 16px;
 }
 

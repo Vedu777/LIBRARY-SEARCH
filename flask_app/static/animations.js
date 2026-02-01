@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeAnimations() {
     // Animate hero title with stagger effect
-    const heroTitle = document.querySelector('.hero-title');
+    // Animate hero title with stagger effect
+    const heroTitle = document.querySelector('.hero-title-animated'); // Changed class to avoid conflict
     if (heroTitle) {
         animateTitleReveal(heroTitle);
     }
@@ -83,10 +84,10 @@ function initializeMicroInteractions() {
             const rect = link.getBoundingClientRect();
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
-            
+
             const moveX = x * 0.3;
             const moveY = y * 0.3;
-            
+
             link.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
 
@@ -101,10 +102,10 @@ function initializeMicroInteractions() {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const rotateX = ((y - rect.height / 2) / rect.height) * 5;
             const rotateY = ((x - rect.width / 2) / rect.width) * 5;
-            
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
@@ -195,7 +196,7 @@ function initializeFormAnimations() {
 function animateTitleReveal(element) {
     const text = element.textContent;
     element.innerHTML = '';
-    
+
     const spans = text.split('').map(char => {
         const span = document.createElement('span');
         span.textContent = char;
@@ -332,7 +333,7 @@ function animateRadioChange(radio) {
 function animateFormSubmit(e) {
     const form = e.target;
     const button = form.querySelector('button[type="submit"]');
-    
+
     if (button) {
         button.classList.add('btn-loading');
         button.disabled = true;
@@ -342,7 +343,7 @@ function animateFormSubmit(e) {
 function fadeOutAndNavigate(url) {
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.3s ease-out';
-    
+
     setTimeout(() => {
         window.location.href = url;
     }, 300);

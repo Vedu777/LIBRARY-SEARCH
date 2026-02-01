@@ -104,13 +104,7 @@
                             <div class="stat-label">Reservations</div>
                         </div>
                     </div>
-                    <div class="stat-widget glassmorphism-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="statRecommended">0</div>
-                            <div class="stat-label">Recommended</div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
@@ -237,7 +231,7 @@
                     document.getElementById('statTotalBorrowed').textContent = stats.totalBorrowed;
                     document.getElementById('statActiveBorrows').textContent = stats.activeBorrows;
                     document.getElementById('statReservations').textContent = stats.reservations;
-                    document.getElementById('statRecommended').textContent = stats.recommended || 0;
+
 
                     // Update borrowed books
                     renderBorrowedBooks(data.borrowedBooks || []);
