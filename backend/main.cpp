@@ -59,6 +59,46 @@ void loadBooksFromCSV(const std::string& path) {
     }
 }
 
+void loadUsersFromCSV(const std::string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) return;
+
+    std::string line;
+    bool header = true;
+
+    while (std::getline(file, line)) {
+        if (header) {
+            header = false;
+            continue;
+        }
+        if (line.empty()) continue;
+
+        auto fields = parseCSVLine(line);
+        if (fields.size() < 4) continue;
+
+        std::string uid = fields[0];
+        std::string name = fields[1];
+        std::string email = fields[2];
+        std::string typeStr = fields[3];
+
+        UserType type = UserType::STUDENT;
+        if (typeStr == "FACULTY") type = UserType::FACULTY;
+        else if (typeStr == "FINAL_YEAR_STUDENT") type = UserType::FINAL_YEAR_STUDENT;
+
+        if (!engine->getUser(uid)) {
+            engine->addUser(new User(uid, name, email, type));
+        }
+    }
+}
+
+void saveUserToCSV(const std::string& path, const std::string& uid, const std::string& name, const std::string& typeStr) {
+    std::ofstream file(path, std::ios::app);
+    if (!file.is_open()) return;
+    
+    // Simple CSV escaping if needed, for now assuming no commas in names
+    file << uid << "," << name << "," << uid + "@library.edu" << "," << typeStr << "\n";
+}
+
 /* ---------------- HANDLERS ---------------- */
 
 json handleSearch(const json& req) {
@@ -170,13 +210,10 @@ json handlePersonalizedRecommend(const json& req) {
 int main() {
     engine = new LibraryEngine();
 
-    loadBooksFromCSV("../data/books.csv");
+    loadBooksFromCSV("data/books.csv");
+    loadUsersFromCSV("data/users.csv");
     engine->buildSearchIndices();
     engine->buildRecommendationGraph();
-
-    engine->addUser(new User("U001", "John Doe", "john@uni.edu", UserType::STUDENT));
-    engine->addUser(new User("U002", "Prof. Smith", "smith@uni.edu", UserType::FACULTY));
-    engine->addUser(new User("U003", "Senior", "senior@uni.edu", UserType::FINAL_YEAR_STUDENT));
 
     std::cout << "Library System Ready" << std::endl;
     std::cout.flush();
@@ -199,6 +236,26 @@ int main() {
             else if (action == "personalized_recommendations") response = handlePersonalizedRecommend(request);
             else if (action == "undo") response = engine->undoLastAction();
             else if (action == "profile") response = engine->getUserProfile(request.value("userID", ""));
+            else if (action == "add_user") {
+                std::string uid = request.value("userID", "");
+                std::string fname = request.value("name", "");
+                std::string utypeStr = request.value("type", "student");
+                UserType utype = UserType::STUDENT;
+                if (utypeStr == "faculty") utype = UserType::FACULTY;
+                else if (utypeStr == "final_year") utype = UserType::FINAL_YEAR_STUDENT;
+                
+                // Check if user exists first to update or add
+                if (!engine->getUser(uid)) {
+                    engine->addUser(new User(uid, fname, uid + "@library.edu", utype));
+                    
+                    // Persist to CSV
+                    std::string saveType = "STUDENT";
+                    if (utype == UserType::FACULTY) saveType = "FACULTY";
+                    else if (utype == UserType::FINAL_YEAR_STUDENT) saveType = "FINAL_YEAR_STUDENT";
+                    saveUserToCSV("data/users.csv", uid, fname, saveType);
+                }
+                response = { {"success", true}, {"message", "User added/verified"} };
+            }
             else response = { {"success", false}, {"message", "Invalid action"} };
 
             std::cout << response.dump() << std::endl;

@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="dark-mode">
     <!-- Navigation -->
     <nav class="navbar">
@@ -18,9 +22,12 @@
                 <a href="/home" class="nav-link active">Dashboard</a>
                 <a href="/search" class="nav-link">Search</a>
                 <a href="/profile" class="nav-link">Profile</a>
+                <button class="nav-link btn-ghost" onclick="undoLastAction()" style="border:none; cursor:pointer;"
+                    title="Undo last action">↺ Undo</button>
                 <div class="user-info">
                     <span class="user-name">{{ name }}</span>
-                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if user_type else 'User' }}</span>
+                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if
+                        user_type else 'User' }}</span>
                 </div>
                 <a href="/logout" class="nav-link logout-btn">Logout</a>
             </div>
@@ -30,16 +37,16 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-gradient"></div>
-        
+
         <div class="hero-content">
             <h2 class="hero-subtitle" style="opacity: 0;">Welcome to Your Library</h2>
-            
+
             <h1 class="hero-title">
                 <span class="reveal-text" style="opacity: 0;">Discover Books.</span>
                 <span class="reveal-text" style="opacity: 0;">Explore Knowledge.</span>
                 <span class="reveal-text" style="opacity: 0;">Master Learning.</span>
             </h1>
-            
+
             <p class="hero-description" style="opacity: 0;">
                 Next-generation library management with Smart recommendations
             </p>
@@ -81,124 +88,19 @@
     <!-- Featured Books Section -->
     <section class="featured-section">
         <div class="section-header">
-            <h2 class="section-title">Featured Collections</h2>
-            <p class="section-subtitle">Trending Books & Popular Selections</p>
+            <h2 class="section-title">Featured Collection</h2>
+            <div class="section-controls">
+                <button class="control-btn prev-btn">←</button>
+                <button class="control-btn next-btn">→</button>
+            </div>
         </div>
 
-        <div class="books-carousel">
-            <!-- Book Card 1 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div class="cover-overlay">C++</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">The C++ Programming Language</h3>
-                    <p class="book-author">Bjarne Stroustrup</p>
-                    <div class="book-meta">
-                        <span class="category">Programming</span>
-                        <span class="availability available">3 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-0-13-110362-7')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-0-13-110362-7')">Reserve</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Card 2 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <div class="cover-overlay">Java</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">Effective Java</h3>
-                    <p class="book-author">Joshua Bloch</p>
-                    <div class="book-meta">
-                        <span class="category">Programming</span>
-                        <span class="availability available">3 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-0-134-49418-8')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-0-134-49418-8')">Reserve</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Card 3 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                    <div class="cover-overlay">DSA</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">Introduction to Algorithms</h3>
-                    <p class="book-author">Thomas H. Cormen</p>
-                    <div class="book-meta">
-                        <span class="category">Algorithms</span>
-                        <span class="availability available">4 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-0-13-235088-0')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-0-13-235088-0')">Reserve</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Card 4 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                    <div class="cover-overlay">Design</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">Design Patterns</h3>
-                    <p class="book-author">Gang of Four</p>
-                    <div class="book-meta">
-                        <span class="category">Software Engineering</span>
-                        <span class="availability available">2 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-0-201-61622-4')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-0-201-61622-4')">Reserve</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Card 5 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                    <div class="cover-overlay">Python</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">Python Data Science Handbook</h3>
-                    <p class="book-author">Jake VanderPlas</p>
-                    <div class="book-meta">
-                        <span class="category">Data Science</span>
-                        <span class="availability available">3 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-1-491-95179-2')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-1-491-95179-2')">Reserve</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Card 6 -->
-            <div class="book-card featured-card">
-                <div class="book-cover" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-                    <div class="cover-overlay">ML</div>
-                </div>
-                <div class="book-info">
-                    <h3 class="book-title">Deep Learning with Python</h3>
-                    <p class="book-author">Francois Chollet</p>
-                    <div class="book-meta">
-                        <span class="category">Machine Learning</span>
-                        <span class="availability available">3 Copies</span>
-                    </div>
-                    <div class="book-actions">
-                        <button class="btn-small btn-outline" onclick="issueBook('978-1-491-95179-1')">Issue</button>
-                        <button class="btn-small btn-ghost" onclick="reserveBook('978-1-491-95179-1')">Reserve</button>
-                    </div>
-                </div>
-            </div>
+        <!-- Dynamic Books Container -->
+        <div id="featuredBooksContainer" class="books-carousel">
+            <div class="loading-shimmer-card"></div>
+            <div class="loading-shimmer-card"></div>
+            <div class="loading-shimmer-card"></div>
+            <div class="loading-shimmer-card"></div>
         </div>
     </section>
 
@@ -207,7 +109,7 @@
         <div class="section-header">
             <h2 class="section-title">Why Choose Our Library?</h2>
         </div>
-        
+
         <div class="features-grid">
             <div class="feature-card glassmorphism-card">
                 <div class="feature-icon">⚡</div>
@@ -243,6 +145,85 @@
     <script src="{{ url_for('static', filename='animations.js') }}"></script>
     <script src="{{ url_for('static', filename='recommendations.js') }}"></script>
     <script>
+        // Load Featured Books on Start
+        window.addEventListener('load', () => {
+            loadFeaturedBooks();
+            loadRecommendations('recommendationsContainer');
+        });
+
+        async function loadFeaturedBooks() {
+            try {
+                // Fetch random "featured" books via search to get real data
+                const queries = ['algorithm', 'python', 'design', 'web'];
+                const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: randomQuery, type: 'title' })
+                });
+
+                const data = await response.json();
+                const container = document.getElementById('featuredBooksContainer');
+
+                if (data.success && data.results.length > 0) {
+                    container.innerHTML = data.results.slice(0, 5).map(book => createBookCard(book)).join('');
+                    // Re-initialize animations for new elements
+                    const observers = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.book-card').forEach(card => observers.observe(card));
+                } else {
+                    container.innerHTML = '<p class="text-center text-muted">No featured books today.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading featured books:', error);
+            }
+        }
+
+        function createBookCard(book) {
+            const categoryColor = getCategoryColor(book.category);
+            const overlayText = book.category.split(' ')[0].substring(0, 4).toUpperCase();
+
+            return `
+                <div class="book-card featured-card fade-in">
+                    <div class="book-cover" style="background: ${categoryColor};">
+                        <div class="cover-overlay">${overlayText}</div>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <div class="book-meta">
+                            <span class="category">${book.category}</span>
+                            <span class="availability ${book.availableCopies > 0 ? 'available' : 'unavailable'}">
+                                ${book.availableCopies} Copies
+                            </span>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">Issue</button>
+                            <button class="btn-small btn-ghost" onclick="reserveBook('${book.isbn}')">Reserve</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                'Programming': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'Software Engineering': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'Machine Learning': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'Data Science': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'Algorithms': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'Web Development': 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+            };
+            return colors[category] || 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)';
+        }
+
         async function issueBook(isbn) {
             try {
                 const response = await fetch('/api/issue', {
@@ -279,6 +260,23 @@
             }
         }
 
+        async function undoLastAction() {
+            try {
+                const response = await fetch('/api/undo', { method: 'POST' });
+                const data = await response.json();
+                showNotification(data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => {
+                        refreshRecommendations();
+                        // Reload if strictly necessary, but preferably just refresh data
+                        location.reload();
+                    }, 500);
+                }
+            } catch (e) {
+                showNotification('Undo failed', 'error');
+            }
+        }
+
         function refreshRecommendations() {
             loadRecommendations('recommendationsContainer');
         }
@@ -306,4 +304,5 @@
         });
     </script>
 </body>
+
 </html>

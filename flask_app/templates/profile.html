@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Library System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="dark-mode">
     <!-- Navigation -->
     <nav class="navbar">
@@ -18,9 +22,12 @@
                 <a href="/home" class="nav-link">Dashboard</a>
                 <a href="/search" class="nav-link">Search</a>
                 <a href="/profile" class="nav-link active">Profile</a>
+                <button id="undoBtn" class="nav-link btn-ghost" onclick="undoLastAction()"
+                    style="border:none; cursor:pointer;" title="Undo last action">↺ Undo</button>
                 <div class="user-info">
                     <span class="user-name">{{ name }}</span>
-                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if user_type else 'User' }}</span>
+                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if
+                        user_type else 'User' }}</span>
                 </div>
                 <a href="/logout" class="nav-link logout-btn">Logout</a>
             </div>
@@ -199,7 +206,7 @@
             try {
                 const response = await fetch('/api/profile');
                 const data = await response.json();
-                
+
                 if (data.success && data.user) {
                     // Update user info - use session name (from template) instead of backend name
                     const user = data.user;
@@ -207,37 +214,37 @@
                     document.getElementById('userID').textContent = user.userID;
                     document.getElementById('userName').textContent = sessionName;
                     document.getElementById('profileName').textContent = sessionName;
-                    
+
                     // Update avatar initial
                     const avatarInitial = document.querySelector('.avatar-initial');
                     if (avatarInitial && sessionName) {
                         avatarInitial.textContent = sessionName[0].toUpperCase();
                     }
-                    
+
                     // Update user type
                     const userType = user.type;
                     const userTypeBadge = document.getElementById('userTypeBadge');
                     userTypeBadge.setAttribute('data-type', userType);
                     userTypeBadge.textContent = userType.replace('_', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                    
+
                     // Update registration date
                     const regDate = new Date(user.registrationDate * 1000);
                     document.getElementById('registrationDate').textContent = regDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                     document.getElementById('profileSubtitle').textContent = `Library Member Since ${regDate.getFullYear()}`;
-                    
+
                     // Update statistics
                     const stats = data.statistics;
                     document.getElementById('statTotalBorrowed').textContent = stats.totalBorrowed;
                     document.getElementById('statActiveBorrows').textContent = stats.activeBorrows;
                     document.getElementById('statReservations').textContent = stats.reservations;
                     document.getElementById('statRecommended').textContent = stats.recommended || 0;
-                    
+
                     // Update borrowed books
                     renderBorrowedBooks(data.borrowedBooks || []);
-                    
+
                     // Update activity timeline
                     renderActivityTimeline(data.activity || []);
-                    
+
                     // Animate elements
                     animateElements();
                 } else if (retries > 0) {
@@ -260,26 +267,26 @@
             const container = document.getElementById('borrowedBooksList');
             const emptyState = document.getElementById('emptyBorrowed');
             const badge = document.getElementById('activeBorrowsBadge');
-            
+
             badge.textContent = `${books.length} Active`;
-            
+
             if (books.length === 0) {
                 container.innerHTML = '';
                 emptyState.style.display = 'block';
                 return;
             }
-            
+
             emptyState.style.display = 'none';
             container.innerHTML = books.map(book => {
                 const issueDate = new Date(book.issueDate * 1000);
                 const dueDate = new Date(book.dueDate * 1000);
                 const now = new Date();
                 const daysUntilDue = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
-                
+
                 let statusClass = 'status-on-time';
                 let statusText = 'On Time';
                 let dueClass = '';
-                
+
                 if (book.status === 'overdue') {
                     statusClass = 'status-overdue';
                     statusText = 'Overdue';
@@ -289,9 +296,9 @@
                     statusText = 'Due Soon';
                     dueClass = 'due-soon';
                 }
-                
+
                 const categoryColor = getCategoryColor(book.category);
-                
+
                 return `
                     <div class="borrowed-book-item">
                         <div class="book-item-cover" style="background: ${categoryColor};">
@@ -324,21 +331,21 @@
 
         function renderActivityTimeline(activities) {
             const container = document.getElementById('activityTimeline');
-            
+
             if (activities.length === 0) {
                 container.innerHTML = '<div class="empty-state"><p>No recent activity</p></div>';
                 return;
             }
-            
+
             container.innerHTML = activities.map(activity => {
                 const timestamp = new Date(activity.timestamp * 1000);
                 const timeAgo = getTimeAgo(timestamp);
                 const actionType = activity.type;
-                const markerClass = actionType === 'issue' ? 'timeline-issue' : 
-                                   actionType === 'return' ? 'timeline-return' : 'timeline-reserve';
-                const actionText = actionType === 'issue' ? 'Issued Book' : 
-                                  actionType === 'return' ? 'Returned Book' : 'Reserved Book';
-                
+                const markerClass = actionType === 'issue' ? 'timeline-issue' :
+                    actionType === 'return' ? 'timeline-return' : 'timeline-reserve';
+                const actionText = actionType === 'issue' ? 'Issued Book' :
+                    actionType === 'return' ? 'Returned Book' : 'Reserved Book';
+
                 return `
                     <div class="timeline-item">
                         <div class="timeline-marker ${markerClass}"></div>
@@ -373,7 +380,7 @@
             const diffHours = Math.floor(diffMs / 3600000);
             const diffDays = Math.floor(diffMs / 86400000);
             const diffWeeks = Math.floor(diffDays / 7);
-            
+
             if (diffMins < 1) return 'Just now';
             if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
             if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
@@ -466,7 +473,26 @@
         window.addEventListener('load', () => {
             loadProfileData();
             loadRecommendations('recommendationsContainer');
+            // Real-time update every 10 seconds
+            setInterval(() => loadProfileData(0), 10000);
         });
+
+        async function undoLastAction() {
+            try {
+                const response = await fetch('/api/undo', { method: 'POST' });
+                const data = await response.json();
+                showNotification(data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => {
+                        loadProfileData();
+                        refreshRecommendations();
+                    }, 500);
+                }
+            } catch (e) {
+                showNotification('Undo failed', 'error');
+            }
+        }
     </script>
 </body>
+
 </html>

@@ -16,27 +16,27 @@
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
-    
+
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
     --bg-tertiary: #334155;
     --bg-light: #f8fafc;
-    
+
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
     --text-tertiary: #94a3b8;
-    
+
     --border: #475569;
     --border-light: #64748b;
-    
+
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
     --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
-    
+
     --glow: 0 0 20px rgba(99, 102, 241, 0.5);
     --glow-accent: 0 0 30px rgba(236, 72, 153, 0.4);
-    
+
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -97,8 +97,15 @@ body {
 }
 
 @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    50% { transform: translate(30px, 30px) rotate(180deg); }
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(30px, 30px) rotate(180deg);
+    }
 }
 
 .login-branding {
@@ -177,7 +184,7 @@ body {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 24px;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.3),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
@@ -256,7 +263,7 @@ body {
     transition: width 0.3s ease-out;
 }
 
-.form-input:focus + .input-focus-border {
+.form-input:focus+.input-focus-border {
     width: 100%;
 }
 
@@ -288,7 +295,7 @@ body {
     font-size: 24px;
 }
 
-.user-type-selector input[type="radio"]:checked + .type-label {
+.user-type-selector input[type="radio"]:checked+.type-label {
     background: rgba(99, 102, 241, 0.2);
     border-color: var(--primary);
     box-shadow: var(--glow);
@@ -665,8 +672,13 @@ body {
 }
 
 @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* ============================================================
@@ -1164,12 +1176,10 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.1),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
     animation: shimmer 1.5s infinite;
 }
 
@@ -1177,13 +1187,16 @@ body {
     0% {
         left: -100%;
     }
+
     100% {
         left: 100%;
     }
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ============================================================
@@ -1245,6 +1258,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1255,6 +1269,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }

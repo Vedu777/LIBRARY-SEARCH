@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Search System - Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="login-page">
     <div class="login-container">
         <!-- Animated background gradient -->
         <div class="gradient-bg"></div>
-        
+
         <!-- Left side - branding -->
         <div class="login-branding">
             <div class="brand-content">
@@ -47,27 +51,15 @@
                 <form id="loginForm" class="login-form">
                     <div class="form-group">
                         <label for="userID" class="form-label">User ID</label>
-                        <input 
-                            type="text" 
-                            id="userID" 
-                            name="userID" 
-                            class="form-input" 
-                            placeholder="Enter your user ID (e.g., U001)"
-                            required
-                        >
+                        <input type="text" id="userID" name="userID" class="form-input"
+                            placeholder="Enter your user ID (e.g., U001)" required>
                         <div class="input-focus-border"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="form-label">Full Name</label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name" 
-                            class="form-input" 
-                            placeholder="Enter your name"
-                            required
-                        >
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Enter your name"
+                            required>
                         <div class="input-focus-border"></div>
                     </div>
 
@@ -116,21 +108,21 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const userID = document.getElementById('userID').value;
             const name = document.getElementById('name').value;
             const userType = document.querySelector('input[name="userType"]:checked').value;
             const errorDiv = document.getElementById('errorMessage');
-            
+
             try {
                 const response = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userID, name, userType })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     document.querySelector('.login-btn').classList.add('btn-loading');
                     setTimeout(() => window.location.href = '/home', 800);
@@ -145,4 +137,5 @@
         });
     </script>
 </body>
+
 </html>

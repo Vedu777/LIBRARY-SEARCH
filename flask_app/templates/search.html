@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Books</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="dark-mode">
     <!-- Navigation -->
     <nav class="navbar">
@@ -18,9 +22,12 @@
                 <a href="/home" class="nav-link">Dashboard</a>
                 <a href="/search" class="nav-link active">Search</a>
                 <a href="/profile" class="nav-link">Profile</a>
+                <button class="nav-link btn-ghost" onclick="undoLastAction()" style="border:none; cursor:pointer;"
+                    title="Undo last action">↺ Undo</button>
                 <div class="user-info">
                     <span class="user-name">{{ name }}</span>
-                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if user_type else 'User' }}</span>
+                    <span class="user-badge" data-type="{{ user_type }}">{{ user_type.replace('_', ' ').title() if
+                        user_type else 'User' }}</span>
                 </div>
                 <a href="/logout" class="nav-link logout-btn">Logout</a>
             </div>
@@ -36,13 +43,8 @@
             <div class="search-container">
                 <div class="search-box glassmorphism-card">
                     <div class="search-input-wrapper">
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            class="search-input" 
-                            placeholder="Search by title or author..."
-                            autocomplete="off"
-                        >
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Search by title or author..." autocomplete="off">
                         <span class="search-icon">🔍</span>
                     </div>
 
@@ -115,9 +117,9 @@
         // Search input listener
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.trim();
-            
+
             clearTimeout(searchTimeout);
-            
+
             if (query.length < 2) {
                 document.getElementById('suggestionsDropdown').style.display = 'none';
                 document.getElementById('resultsContainer').innerHTML = `
@@ -141,7 +143,7 @@
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentSearchType = btn.dataset.type;
-                
+
                 const query = document.getElementById('searchInput').value.trim();
                 if (query.length >= 2) {
                     performSearch(query);
@@ -154,7 +156,7 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 const resultsContainer = document.getElementById('resultsContainer');
                 resultsContainer.classList.remove('grid-view', 'list-view');
                 resultsContainer.classList.add(`${btn.dataset.view}-view`);
@@ -232,10 +234,10 @@
                             <span class="availability ${availability}">${book.availableCopies}/${book.totalCopies} available</span>
                         </div>
                         <div class="book-actions">
-                            ${book.availableCopies > 0 ? 
-                                `<button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">Issue Book</button>` : 
-                                `<button class="btn-small btn-outline disabled">Out of Stock</button>`
-                            }
+                            ${book.availableCopies > 0 ?
+                        `<button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">Issue Book</button>` :
+                        `<button class="btn-small btn-outline disabled">Out of Stock</button>`
+                    }
                             <button class="btn-small btn-ghost" onclick="reserveBook('${book.isbn}')">Reserve</button>
                         </div>
                     </div>
@@ -293,6 +295,24 @@
             }
         }
 
+        async function undoLastAction() {
+            try {
+                const response = await fetch('/api/undo', { method: 'POST' });
+                const data = await response.json();
+                showNotification(data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => {
+                        // Refresh search results if a query is active
+                        const query = document.getElementById('searchInput').value.trim();
+                        if (query.length >= 2) performSearch(query);
+                        refreshRecommendations();
+                    }, 500);
+                }
+            } catch (e) {
+                showNotification('Undo failed', 'error');
+            }
+        }
+
         function showNotification(message, type = 'info') {
             const toast = document.getElementById('notificationToast');
             toast.textContent = message;
@@ -312,4 +332,5 @@
         window.addEventListener('load', () => loadRecommendations('recommendationsContainer'));
     </script>
 </body>
+
 </html>
