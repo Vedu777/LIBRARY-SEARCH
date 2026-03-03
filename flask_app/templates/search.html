@@ -208,17 +208,59 @@
             }
         }
 
-        function renderResults(results) {
+        async function renderResults(results) {
             const resultsContainer = document.getElementById('resultsContainer');
             resultsContainer.innerHTML = '';
 
-            results.forEach((book, index) => {
+            for (const [index, book] of results.entries()) {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'book-card result-card';
                 bookCard.style.animationDelay = `${index * 50}ms`;
 
                 const categoryColor = getCategoryColor(book.category);
                 const availability = book.availableCopies > 0 ? 'available' : 'unavailable';
+
+                // Fetch reservation status for this book
+                let reservationStatus = null;
+                try {
+                    const resResponse = await fetch('/api/reservation_status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ isbn: book.isbn })
+                    });
+                    reservationStatus = await resResponse.json();
+                } catch (e) {
+                    console.error('Failed to fetch reservation status', e);
+                }
+
+                // Determine button and badge based on reservation status
+                let issueButton = '';
+                let reservationBadge = '';
+
+                if (book.availableCopies > 0) {
+                    // Book is available
+                    if (reservationStatus && reservationStatus.hasReservations) {
+                        if (reservationStatus.isNextInLine) {
+                            // User is next in line - show special button
+                            issueButton = `<button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">🎯 Issue Book - Your Turn!</button>`;
+                            reservationBadge = `<div class="reservation-badge priority-active">🎯 Your Turn! (Position 1/${reservationStatus.totalInQueue})</div>`;
+                        } else if (reservationStatus.hasReserved) {
+                            // User has reserved but not next in line
+                            issueButton = `<button class="btn-small btn-outline disabled">Reserved by Higher Priority</button>`;
+                            reservationBadge = `<div class="reservation-badge priority-waiting">⏳ Position ${reservationStatus.queuePosition}/${reservationStatus.totalInQueue}</div>`;
+                        } else {
+                            // Book is reserved by others, user hasn't reserved
+                            issueButton = `<button class="btn-small btn-outline disabled">Reserved by Others</button>`;
+                            reservationBadge = `<div class="reservation-badge priority-waiting">📋 ${reservationStatus.totalInQueue} in queue</div>`;
+                        }
+                    } else {
+                        // No reservations - normal issue
+                        issueButton = `<button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">Issue Book</button>`;
+                    }
+                } else {
+                    // Book is out of stock
+                    issueButton = `<button class="btn-small btn-outline disabled">Out of Stock</button>`;
+                }
 
                 bookCard.innerHTML = `
                     <div class="book-cover" style="background: ${categoryColor};">
@@ -233,18 +275,16 @@
                             <span class="category">${book.category}</span>
                             <span class="availability ${availability}">${book.availableCopies}/${book.totalCopies} available</span>
                         </div>
+                        ${reservationBadge}
                         <div class="book-actions">
-                            ${book.availableCopies > 0 ?
-                        `<button class="btn-small btn-outline" onclick="issueBook('${book.isbn}')">Issue Book</button>` :
-                        `<button class="btn-small btn-outline disabled">Out of Stock</button>`
-                    }
+                            ${issueButton}
                             <button class="btn-small btn-ghost" onclick="reserveBook('${book.isbn}')">Reserve</button>
                         </div>
                     </div>
                 `;
 
                 resultsContainer.appendChild(bookCard);
-            });
+            }
         }
 
         function getCategoryColor(category) {

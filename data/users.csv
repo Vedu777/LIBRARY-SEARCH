@@ -2,3 +2,5 @@ UserID,Name,Email,Type
 U007,James Bond,U007@library.edu,FACULTY
 U001,Ved U,U001@library.edu,STUDENT
 U002,Josh,U002@library.edu,FINAL_YEAR_STUDENT
+U004,Harry Lewis,U004@library.edu,FACULTY
+U005,Sudhakar,U005@library.edu,STUDENT

@@ -167,6 +167,21 @@ json LibraryEngine::issueBook(const std::string& userID, const std::string& isbn
         return res;
     }
 
+    // Check if book has reservations
+    auto it = reservationQueues.find(isbn);
+    if (it != reservationQueues.end() && !it->second.empty()) {
+        // Book is reserved - check if this user is next in line
+        Reservation* nextReservation = it->second.top();
+        if (nextReservation->userID != userID) {
+            res["success"] = false;
+            res["message"] = "Book is reserved by higher priority user";
+            return res;
+        }
+        // User is next in line - remove from queue
+        reservationQueues[isbn].pop();
+        delete nextReservation;
+    }
+
     book->availableCopies--;
 
     Transaction* t = new Transaction(
@@ -242,6 +257,55 @@ json LibraryEngine::reserveBook(const std::string& userID, const std::string& is
     res["success"] = true;
     res["message"] = "Book reserved successfully";
     res["queuePosition"] = reservationQueues[isbn].size();
+    return res;
+}
+
+json LibraryEngine::getReservationStatus(const std::string& userID, const std::string& isbn) {
+    json res;
+    
+    // Check if there are any reservations for this book
+    auto it = reservationQueues.find(isbn);
+    if (it == reservationQueues.end() || it->second.empty()) {
+        res["hasReservations"] = false;
+        res["hasReserved"] = false;
+        res["isNextInLine"] = false;
+        res["queuePosition"] = 0;
+        res["totalInQueue"] = 0;
+        return res;
+    }
+
+    // Copy the priority queue to check positions
+    auto queueCopy = it->second;
+    bool hasReserved = false;
+    bool isNextInLine = false;
+    int position = 0;
+    int totalInQueue = queueCopy.size();
+
+    // Check if user is at the top (next in line)
+    if (!queueCopy.empty() && queueCopy.top()->userID == userID) {
+        isNextInLine = true;
+        hasReserved = true;
+        position = 1;
+    } else {
+        // Search through queue to find user's position
+        int currentPos = 1;
+        while (!queueCopy.empty()) {
+            if (queueCopy.top()->userID == userID) {
+                hasReserved = true;
+                position = currentPos;
+                break;
+            }
+            queueCopy.pop();
+            currentPos++;
+        }
+    }
+
+    res["hasReservations"] = true;
+    res["hasReserved"] = hasReserved;
+    res["isNextInLine"] = isNextInLine;
+    res["queuePosition"] = position;
+    res["totalInQueue"] = totalInQueue;
+    
     return res;
 }
 

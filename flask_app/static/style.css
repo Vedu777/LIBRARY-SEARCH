@@ -860,6 +860,51 @@ body {
     gap: 8px;
 }
 
+/* Reservation Priority Badges */
+.reservation-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 12px;
+    display: inline-block;
+    width: 100%;
+}
+
+.priority-active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    animation: pulse 2s infinite;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+}
+
+.priority-waiting {
+    background: rgba(148, 163, 184, 0.15);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: var(--text-tertiary);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+}
+
+.btn-outline.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* ============================================================
    FEATURES GRID
    ============================================================ */

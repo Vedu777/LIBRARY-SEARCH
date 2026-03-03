@@ -254,6 +254,18 @@ def api_profile():
     })
     return jsonify(result)
 
+@app.route('/api/reservation_status', methods=['POST'])
+def api_reservation_status():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Not authenticated"}), 401
+    
+    data = request.get_json()
+    return jsonify(send_with_retry({
+        "action": "reservation_status",
+        "userID": session.get('user_id'),
+        "isbn": data.get("isbn")
+    }))
+
 # ================= MAIN =================
 
 if __name__ == '__main__':

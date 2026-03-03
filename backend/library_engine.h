@@ -62,6 +62,7 @@ public:
     json issueBook(const std::string& userID, const std::string& isbn);
     json returnBook(const std::string& userID, const std::string& isbn);
     json reserveBook(const std::string& userID, const std::string& isbn);
+    json getReservationStatus(const std::string& userID, const std::string& isbn);
 
     // Recommendations
     std::vector<SearchResult> getRecommendations(const std::string& isbn, int limit);

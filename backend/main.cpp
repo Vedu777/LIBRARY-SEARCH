@@ -236,6 +236,12 @@ int main() {
             else if (action == "personalized_recommendations") response = handlePersonalizedRecommend(request);
             else if (action == "undo") response = engine->undoLastAction();
             else if (action == "profile") response = engine->getUserProfile(request.value("userID", ""));
+            else if (action == "reservation_status") {
+                response = engine->getReservationStatus(
+                    request.value("userID", ""),
+                    request.value("isbn", "")
+                );
+            }
             else if (action == "add_user") {
                 std::string uid = request.value("userID", "");
                 std::string fname = request.value("name", "");
